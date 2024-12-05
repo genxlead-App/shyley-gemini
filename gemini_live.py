@@ -307,23 +307,33 @@ def display_chat_messages():
                         product_count = 0
                     else:
                         product_count = len(message['product'])
+                
                     st.markdown(f"*Img Count**:&nbsp;&nbsp;{product_count}")
                 # Display the image if image_url exists
                 if "product" in message and message["product"]:
-                    product_details = message['product']
+                    product_details = message["product"]
+                    
                     if isinstance(product_details, list):                        
                         # Check if it's a nested array
                         if all(isinstance(item, list) for item in product_details):
                             for sublist in product_details:
-                                
-                                st.markdown(sublist[0].get('url_category'))
-                                card(sublist)
-                                    # card(product)  # Example: process each product
+                                # Ensure sublist is not empty and contains valid dictionaries
+                                if sublist and isinstance(sublist[0], dict):
+                                    url_category = sublist[0].get('url_category', 'No URL Provided')  # Safely get the URL
+                                    st.markdown(url_category)
+                                    card(sublist)  # Process the sublist
+                                else:
+                                    st.warning("Invalid sublist structure or empty sublist.")
                         else:
-                            card(product_details=product_details)
-                                # card(product)  # Example: process each product
+                            # Process if it's not a nested list
+                            if all(isinstance(item, dict) for item in product_details):
+                                card(product_details=product_details)
+                            else:
+                                st.warning("Product details are not structured as a list of dictionaries.")
                     else:
                         print("product_details is not an array.")
+                else:
+                    st.warning("No 'product' key in the message or it's empty.")
                         # card(product_details)
 
 
