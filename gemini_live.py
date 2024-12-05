@@ -333,8 +333,10 @@ def display_chat_messages():
                     else:
                         print("product_details is not an array.")
                 else:
-                    st.warning("No 'product' key in the message or it's empty.")
+                    if(message['role']!="user"):
+                        st.warning("No 'product' key in the message or it's empty.")
                         # card(product_details)
+
 
 
 
